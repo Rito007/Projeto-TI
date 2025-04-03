@@ -18,7 +18,12 @@
 
         if(isset($_POST['username']) && isset($_POST['password']))
         {
-            $Auth->login($_POST['username'], $_POST['password']);
+            $resultado = $Auth->login($_POST['username'], $_POST['password']);
+        }
+
+        if (isset($resultado->success) && $resultado->success) {
+            header("Location: dashboard.php");
+            exit;
         }
     ?>
 

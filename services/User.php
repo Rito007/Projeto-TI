@@ -1,7 +1,7 @@
 <?php
 namespace Services;
 
-require_once(dirname(__FILE__) ."./../config/config.php");
+require_once(dirname(__FILE__) ."/../config/config.php");
 
 
 use Config\Config;
@@ -34,10 +34,14 @@ class User {
         if (isset(self::$users[$username])) {
             $user = self::$users[$username];
             if (password_verify($password, $user->getPassword())) {
-                return $user; // Retorna o objeto User em caso de sucesso
+                return (object)['user'=>$user,'success'=>true]; // Retorna o objeto User em caso de sucesso
             }
+            else
+                return (object)['unameErro'=>'', 'passwordErro'=>'Palavra passe incorreta.','success'=>false];
         }
-        return null; // Retorna null se não encontrar o usuário ou senha incorreta
+        else
+            return (object)['unameErro'=>'Utilizador não encontrado.', 'passwordErro'=>'','success'=>false];
+         // Retorna null se não encontrar o usuário ou senha incorreta
     }
 
     public static function inicializar()

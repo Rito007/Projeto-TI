@@ -13,7 +13,7 @@
         <a class="nav-link" href="#">Historico</a>
       </li>
     </ul>
-    <a href="logout" class="nav-link">Logout</a>
+    <a href="logout.php" class="nav-link">Logout</a>
   </div>
 </div>
 </nav>
