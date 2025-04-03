@@ -31,7 +31,7 @@
         <div style="height:100vh;" class="container align-content-center">
             <div class="row justify-content-center mb-5">
 
-                <form class="formLogin" method="POST" action="index.php">
+                <form class="formLogin shadow-sm rounded d-flex flex-column justify-content-center p-5" method="POST" action="index.php">
                     <div class="d-flex justify-content-center mb-4">
                         <img class="w-100" src="./img/estg_h.png" alt="">
                     </div>
