@@ -11,7 +11,6 @@ class User {
     private $password;
     private static $users = [];
     public static $localUserDB;
-    private static $isInitialized = false;
 
     public function __construct($username, $password, $needsHash = True) {
         $this->username = $username;
@@ -88,5 +87,5 @@ class User {
 User::inicializar();
 //User::addUserCsv(new User("admin","adminadmin"));
 //echo "Utilizador Criado";
-// User::addUserCsv(new User("default","defaultuser"));
+//User::addUserCsv(new User("default","defaultuser"));
 ?>
