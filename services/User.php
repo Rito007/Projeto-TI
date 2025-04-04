@@ -11,6 +11,7 @@ class User {
     private $password;
     private static $users = [];
     public static $localUserDB;
+    private static $isInitialized = false;
 
     public function __construct($username, $password, $needsHash = True) {
         $this->username = $username;
@@ -50,15 +51,13 @@ class User {
     }
 
     public static function loadUsersFromFile() {
-       
+        self::$users = [];
         if (!file_exists(filename: self::$localUserDB) || !is_readable(self::$localUserDB)) {
             return;
         }
 
-        // Abre o arquivo para leitura
         $file = fopen(self::$localUserDB, "r");
 
-        // Lê linha por linha do arquivo CSV
         while (($data = fgetcsv($file)) !== false) {
             if (isset($data[0]) && isset($data[1])) {
                 $username = $data[0];

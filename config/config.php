@@ -6,6 +6,7 @@ class Config {
         'dbPath' => '/db/users.csv',
         'rootPath' => null,
         'relativePath' => null,
+        'sensorPath' => '/api/sensores',
     ];
 
     public static function inicializar() {
