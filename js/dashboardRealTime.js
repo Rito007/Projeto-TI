@@ -14,11 +14,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     let estadoClasse = 'text-bg-primary';
                     let estadoTexto = 'Normal';
-
+                    if(sensor.nome == "Humidade")
+                    {
+                        console.log(sensor.valor)
+                    }
                     if (sensor.nome === 'Temperatura' && parseFloat(sensor.valor) > 30) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
-                    } else if (sensor.nome === 'Humidade' && parseFloat(sensor.valor) < 40) {
+                    } else if (sensor.nome === 'Humidade' && parseFloat(sensor.valor) > 40) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
                     } else if (sensor.nome === 'Led Arduino' && sensor.valor === 'Ativo') {
