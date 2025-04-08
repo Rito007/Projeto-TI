@@ -19,7 +19,7 @@
 
     $Auth = new Auth();
     $Auth->checkLoginRedirect("/Projeto TI", true);
-    require dirname(__FILE__) . "/components/navbar.php";
+    require __DIR__ . "/components/navbar.php";
 
 
     ?>
@@ -84,23 +84,15 @@
 
                             foreach ($sensores as $sensor) {
                                 $estadoClasse = 'text-bg-primary';
-                                $estadoTexto = 'Normal';
-
-                                if ($sensor['estado'] == 'Elevada') {
-                                    $estadoClasse = 'text-bg-danger';
-                                    $estadoTexto = 'Elevada';
-                                } elseif ($sensor['estado'] == 'Ativo') {
-                                    $estadoClasse = 'text-bg-success';
-                                    $estadoTexto = 'Ativo';
-                                }
+                                
 
                                 echo '
                                     <tr data-sensor="' . htmlspecialchars($sensor['nome']) . 't">
                                         <th scope="row">' . htmlspecialchars($sensor['nome']) . '</th>
-                                        <td>' . htmlspecialchars($sensor['valor']) . '</td>
+                                        <td>' . htmlspecialchars($sensor['valor'].$sensor['unidade']) . '</td>
                                         <td>' . htmlspecialchars($sensor['data_de_atualizacao']) . '</td>
                                         <td>
-                                            <div class="badge rounded-pill ' . $estadoClasse . '">' . $estadoTexto . '</div>
+                                            <div class="badge rounded-pill ' . $estadoClasse . '">Normal</div>
                                         </td>
                                     </tr>';
                             }

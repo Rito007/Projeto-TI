@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     } else if (sensor.nome === 'Humidade' && parseFloat(sensor.valor) > 40) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
-                    } else if (sensor.nome === 'Led Arduino' && sensor.valor === 'Ativo') {
+                    } else if (sensor.nome === 'Led' && sensor.valor === '1') {
                         estadoClasse = 'text-bg-success';
                         estadoTexto = 'Ativo';
                     }
-
+                    
                     estadoCell.className = `badge rounded-pill ${estadoClasse}`;
                     estadoCell.innerHTML = estadoTexto;
                 }
@@ -41,7 +41,12 @@ document.addEventListener("DOMContentLoaded", function () {
             let card = document.querySelector(`[data-sensor="${sensor.nome}"]`);
 
             if (card) {
-                card.querySelector(".card-header").innerHTML = `<b>${sensor.nome}: ${sensor.valor}</b>`;
+                card.querySelector(".card-header").innerHTML = 
+                `<b>${sensor.nome}: ${
+                    sensor.unidade === "VF" 
+                        ? (sensor.valor === "1" || sensor.valor === 1 ? "Ativo" : "Desativo") 
+                        : `${sensor.valor} ${sensor.unidade}`
+                }</b>`;
                 card.querySelector(".card-body img").src = sensor.imagem;
                 card.querySelector(".card-footer span").innerHTML = `<b>Atualização:</b> ${sensor.data_de_atualizacao} - <a href="#">Histórico</a>`;
             }
@@ -52,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch('api/api.php?valoresSensores')
             .then(response => {
                 if (!response.ok) {
+
                     throw new Error('Erro na resposta da API');
                 }
                 return response.json();

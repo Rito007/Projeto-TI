@@ -10,7 +10,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <?php
-        require_once(dirname(__FILE__) ."\services\Auth.php");
+        require_once(__DIR__ ."\services\Auth.php");
         use Services\Auth;
     
         $Auth = new Auth();

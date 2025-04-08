@@ -52,6 +52,7 @@ class User {
     public static function loadUsersFromFile() {
         self::$users = [];
         if (!file_exists(filename: self::$localUserDB) || !is_readable(self::$localUserDB)) {
+            trigger_error("Erro de configuraçao do ficheiro da Database", E_USER_WARNING);  
             return;
         }
 

@@ -11,17 +11,20 @@ class Sensor
     private $nome;
     private $valor;
     private $dataDeAtualizacao;
-    private $estado;
+    private $unidade;
+    private $log;
     private $imagem;
     private static $sensores = [];
 
-    public function __construct($nome, $valor, $estado, $data)
+    public function __construct($nome, $valor, $unidade, $data, $log)
     {
         $this->nome = $nome;
         $this->valor = $valor;
         $this->dataDeAtualizacao = $data;
-        $this->estado = $estado;
-        $this->imagem = Config::get("relativePath") . "/img/" . strtolower(str_replace(' ', '_', trim($nome))) . ".png";
+        $this->unidade = $unidade;
+        $this->imagem = Config::get("relativePath") . "//img//" . strtolower(str_replace(' ', '_', trim($nome))) . ".png";
+        $this->log = $log;
+
     }
 
     private function escreveFicheiro($caminho, $valor, $log =false)
@@ -29,7 +32,9 @@ class Sensor
         if (file_exists($caminho) && !$log) {
             unlink($caminho);
         }
-        file_put_contents($caminho, $valor);
+        $ficheiro = fopen($caminho, 'a');
+        fwrite($ficheiro, $valor);
+        fclose($ficheiro);
     }
 
     public static function getSensores()
@@ -41,13 +46,18 @@ class Sensor
     {
        $this->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/valor.txt",$valor);
        $this->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/hora.txt", date("Y/m/d H:m:s"));
-       $this->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/log.txt", "Alterado de " . $this->valor ." -> ". $valor ." Data: " . date("Y/m/d H:m:s"), true);
+       $this->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/log.txt",  $valor ."," . date("Y/m/d H:m:s")."\n", true);
     }
 
     public function atualizaValores()
     {
-        $caminho = Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/valor.txt";
-        $this->valor = file_get_contents($caminho);
+        $caminho = Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome;
+        $valor = file_get_contents($caminho . '/valor.txt');
+        $data = file_get_contents($caminho . '/hora.txt');
+        $log = file_get_contents($caminho . '/log.txt');
+        $this->valor = $valor;
+        $this->dataDeAtualizacao = $data;
+        $this->log = $log;
     }
 
     public static function carregaSensorDaPasta($folderName)
@@ -62,12 +72,12 @@ class Sensor
         $valor = file_get_contents($caminho . '/valor.txt');
         $data = file_get_contents($caminho . '/hora.txt');
         $log = file_get_contents($caminho . '/log.txt');
-
-        if (empty($nome) || empty($valor) || empty($data)) {
+        $unidade = file_get_contents($caminho . '/unidade.txt');
+        if (empty($nome) || (empty($valor) && $valor != 0) || empty($data)) {
             return null;
         }
 
-        return new Sensor($nome, $valor, 'Normal', $data);
+        return new Sensor($nome, $valor, $unidade, $data,$log);
     }
 
     public static function carregarSensoresDosFicheiros()
@@ -104,14 +114,19 @@ class Sensor
         return $this->dataDeAtualizacao;
     }
 
-    public function getEstado()
+    public function getUnidade()
     {
-        return $this->estado;
+        return $this->unidade;
     }
 
     public function getImagem()
     {
         return $this->imagem;
+    }
+
+    public function getLogs()
+    {
+        return $this->log;
     }
 
     public function toArray()
@@ -120,10 +135,11 @@ class Sensor
             'nome' => $this->nome,
             'valor' => $this->valor,
             'data_de_atualizacao' => $this->dataDeAtualizacao,
-            'estado' => $this->estado,
+            'unidade' => $this->unidade,
             'imagem' => $this->imagem
         ];
     }
+
 }
 
 Sensor::carregarSensoresDosFicheiros();

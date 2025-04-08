@@ -1,6 +1,6 @@
 <?php 
 namespace Services;
-require_once (dirname(__FILE__) . "/User.php");
+require_once (__DIR__ . "/User.php");
 use Services\User;
 
 class Auth {
