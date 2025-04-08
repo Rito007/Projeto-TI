@@ -11,7 +11,7 @@ class Config {
 
     public static function inicializar() {
         if (self::$config['rootPath'] === null) {
-            self::$config['rootPath'] = $_SERVER['DOCUMENT_ROOT'] . "/Projeto";
+            self::$config['rootPath'] = $_SERVER['DOCUMENT_ROOT'] . "/Projeto-TI";
             self::$config["relativePath"] = str_replace('C:/xampp/htdocs', '', self::$config["rootPath"]);
         }
     }

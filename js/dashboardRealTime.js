@@ -14,10 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     valorCell.innerHTML = sensor.valor + sensor.unidade;
                     let estadoClasse = 'text-bg-primary';
                     let estadoTexto = 'Normal';
-                    if(sensor.nome == "Humidade")
-                    {
-                        console.log(sensor.valor)
-                    }
+        
                     if (sensor.nome === 'Temperatura' && parseFloat(sensor.valor) > 30) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
@@ -44,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let card = document.querySelector(`[data-sensor="${sensor.nome}"]`);
 
             if (card) {
+                console.log(sensor.unidade)
                 card.querySelector(".card-header").innerHTML = 
                 `<b>${sensor.nome}: ${
                     sensor.unidade === "VF" 
