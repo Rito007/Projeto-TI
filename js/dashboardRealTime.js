@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-
+    let primeiroCarregamento = true;
     function atualizarTabelaSensores(data) {
         data.forEach(sensor => {
             let row = document.querySelector(`[data-sensor="${sensor.nome}t"]`);
@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 let estadoCell = row.querySelector("td:nth-child(4) .badge");
 
                 if (valorCell && dataCell && estadoCell) {
-                    valorCell.innerHTML = sensor.valor;
+                    
                     dataCell.innerHTML = sensor.data_de_atualizacao;
-
+                    valorCell.innerHTML = sensor.valor + sensor.unidade;
                     let estadoClasse = 'text-bg-primary';
                     let estadoTexto = 'Normal';
                     if(sensor.nome == "Humidade")
@@ -24,9 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     } else if (sensor.nome === 'Humidade' && parseFloat(sensor.valor) > 40) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
-                    } else if (sensor.nome === 'Led' && sensor.valor === '1') {
+                    } else if (sensor.nome === 'Led') {
                         estadoClasse = 'text-bg-success';
-                        estadoTexto = 'Ativo';
+                        sensor.valor == 1 ? estadoTexto = "Ativo" : estadoTexto= "Inativo";
+                        sensor.valor == 1 ? estadoClasse = "text-bg-success" : estadoClasse= "text-bg-danger";
+                  
+                        valorCell.innerHTML = estadoTexto;
                     }
                     
                     estadoCell.className = `badge rounded-pill ${estadoClasse}`;
@@ -44,11 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 card.querySelector(".card-header").innerHTML = 
                 `<b>${sensor.nome}: ${
                     sensor.unidade === "VF" 
-                        ? (sensor.valor === "1" || sensor.valor === 1 ? "Ativo" : "Desativo") 
-                        : `${sensor.valor} ${sensor.unidade}`
+                        ? (sensor.valor === "1" || sensor.valor === 1 ? "Ativo" : "Inativo") 
+                        : `${sensor.valor}${sensor.unidade}`
                 }</b>`;
                 card.querySelector(".card-body img").src = sensor.imagem;
-                card.querySelector(".card-footer span").innerHTML = `<b>Atualização:</b> ${sensor.data_de_atualizacao} - <a href="#">Histórico</a>`;
+                let href = card.querySelector(".card-footer span a").getAttribute('href');
+                card.querySelector(".card-footer span").innerHTML = `<b>Atualização:</b> ${sensor.data_de_atualizacao} - <a href="${href}">Histórico</a>`;
             }
         });
     }
@@ -68,6 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Erro ao atualizar sensores:", error));
     }
-
+    if(primeiroCarregamento)
+    {
+        atualizarValoresSensores()
+        primeiroCarregamento = false;    
+    }
     setInterval(atualizarValoresSensores, 5000);
 });

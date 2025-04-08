@@ -45,6 +45,7 @@ class Api
             $sensor->atualizaValores();
             $data[] = [
                 'nome' => $sensor->getNome(),
+                'unidade' => $sensor->getUnidade(),
                 'logs' => $sensor->getLogs(),
             ];
         }

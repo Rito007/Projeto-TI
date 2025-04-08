@@ -13,12 +13,12 @@
 
 <body>
     <?php
-    require_once(dirname(__FILE__) . "/services/Auth.php");
-
+    require_once(__DIR__ . "/services/Auth.php");
+    require_once(__DIR__ . "/config/config.php");
     use Services\Auth;
-
+    use Config\Config;
     $Auth = new Auth();
-    $Auth->checkLoginRedirect("/Projeto TI", true);
+    $Auth->checkLoginRedirect(Config::get('relativePath'), true);
     require __DIR__ . "/components/navbar.php";
 
 
@@ -31,7 +31,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <div id="title-header">
             <h1>Servidor IoT</h1>
-            <h6>user: <?php echo $_SESSION['utilizador']; ?></h6>
+            <h6>Utilizador: <?php echo $_SESSION['utilizador']; ?></h6>
         </div>
         <div class="text-end"><img class="imagemEstg w-75" src="img/estgRecortado.png" alt="estg-imagem"></div>
     </div>
@@ -46,13 +46,22 @@
 
             if (!empty($sensores)) {
                 foreach ($sensores as $sensor) {
+                    $sensorValor = 0;
+                    if($sensor['unidade'] == "VF")
+                    {
+                        $sensor['valor'] == "0" ? $sensorValor = "Ativo" : $sensorValor = "Inativo";
+                    }
+                    else
+                    {
+                        $sensorValor = $sensor['valor'] . $sensor['unidade'];
+                    }
                     echo '
         <div class="col col-sm-* m-2">
             <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
-                <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensor['valor']) . '</b></div>
+                <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
                 <div class="card-body text-center"><img src="' . $sensor['imagem'] . '"></div>
                 <div class="card-footer">
-                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="#">Histórico</a></span>
+                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars($sensor['nome']).'">Histórico</a></span>
                 </div>
             </div>
         </div>';
@@ -84,12 +93,19 @@
 
                             foreach ($sensores as $sensor) {
                                 $estadoClasse = 'text-bg-primary';
-                                
+                                if($sensor['unidade'] == "VF")
+                                {
+                                    $sensor['valor'] == "0" ? $sensorValor = "Ativo" : $sensorValor = "Inativo";
+                                }
+                                else
+                                {
+                                    $sensorValor = $sensor['valor'] . $sensor['unidade'];
+                                }
 
                                 echo '
                                     <tr data-sensor="' . htmlspecialchars($sensor['nome']) . 't">
                                         <th scope="row">' . htmlspecialchars($sensor['nome']) . '</th>
-                                        <td>' . htmlspecialchars($sensor['valor'].$sensor['unidade']) . '</td>
+                                        <td>' . htmlspecialchars($sensorValor) . '</td>
                                         <td>' . htmlspecialchars($sensor['data_de_atualizacao']) . '</td>
                                         <td>
                                             <div class="badge rounded-pill ' . $estadoClasse . '">Normal</div>
