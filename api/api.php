@@ -3,25 +3,27 @@
 namespace Api;
 
 require_once(dirname(__FILE__) . "/../models/sensor.php");
-
+require_once(dirname(__FILE__) . "/../services/Logica.php");
 
 use Models\Sensor;
+use Services\Logica;
 
 class Api
 {
-
+    
     private static function gerarValoresAleatorios()
     {
+
         foreach (Sensor::getSensores() as $sensor) {
-            
-            if ($sensor->getNome() == 'Led') {
+             if ($sensor->getNome() == 'Temperatura') {
+                $valor = rand(10, 30);
+            } elseif ($sensor->getUnidade() == "VF" && $sensor->getNome() != "AC") {
                 $valor = rand(0, 1);
-            } elseif ($sensor->getNome() == 'Temperatura') {
-                $valor = rand(15, 50);
-            } elseif ($sensor->getNome() == 'Humidade') {
-                $valor = rand(30, 90);
-            } else {
-                $valor = rand(0, 100);
+            }
+            if($sensor->getNome() == "AC")
+            {
+                    $valor = Logica::logicaTemperatura( Sensor::getSensorByName('Temperatura')->getValor());
+
             }
             $sensor->setValores($sensor->getNome(), $valor);
         }
@@ -51,6 +53,7 @@ class Api
         }
         return json_encode($data);
     }
+    
     public static function getSensoresData()
     {
         $data = [];

@@ -41,7 +41,6 @@ class User {
         }
         else
             return (object)['unameErro'=>'Utilizador não encontrado.', 'passwordErro'=>'','success'=>false];
-         // Retorna null se não encontrar o usuário ou senha incorreta
     }
 
     public static function inicializar()
@@ -55,7 +54,7 @@ class User {
             trigger_error("Erro de configuraçao do ficheiro da Database", E_USER_WARNING);  
             return;
         }
-
+        
         $file = fopen(self::$localUserDB, "r");
 
         while (($data = fgetcsv($file)) !== false) {

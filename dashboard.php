@@ -31,12 +31,12 @@
     <div class="container d-flex justify-content-between align-items-center">
         <div id="title-header">
             <h1>Servidor IoT</h1>
-            <h6>Utilizador: <?php echo $_SESSION['utilizador']; ?></h6>
+            <h6>Utilizador: <?php echo $Auth->getUser(); ?></h6>
         </div>
         <div class="text-end"><img class="imagemEstg w-75" src="img/estgRecortado.png" alt="estg-imagem"></div>
     </div>
     <div class="container h-100 d-flex flex-column justify-content-center">
-        <div class="row">
+        <div class="row justify-content-center">
             <?php
             require_once(dirname(__FILE__) . "/api/api.php");
 
@@ -56,10 +56,10 @@
                         $sensorValor = $sensor['valor'] . $sensor['unidade'];
                     }
                     echo '
-        <div class="col col-sm-* m-2">
+        <div class="col col-sm-4 m-2 cartoesSensores">
             <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
                 <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
-                <div class="card-body text-center"><img src="' . $sensor['imagem'] . '"></div>
+                <div class="card-body text-center"><img  src="' . $sensor['imagem'] . '"></div>
                 <div class="card-footer">
                     <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars($sensor['nome']).'">Histórico</a></span>
                 </div>

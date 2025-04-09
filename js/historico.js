@@ -11,12 +11,7 @@ $.getJSON("api/api.php?valoresSensoresLog", function (resposta) {
             let valorFinal = valor;
             sensor.unidade === "VF" ? (valor === "1" ? valorFinal= "Ativo" :valorFinal= "Inativo") 
             : valorFinal =`${valor}${sensor.unidade}`
-            
-            
-
-
-
-
+        
             tbody += `<tr>
                 <td>${id++}</td>
                 <td>${sensor.nome}</td>

@@ -18,10 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (sensor.nome === 'Temperatura' && parseFloat(sensor.valor) > 30) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
-                    } else if (sensor.nome === 'Humidade' && parseFloat(sensor.valor) > 40) {
-                        estadoClasse = 'text-bg-danger';
-                        estadoTexto = 'Elevada';
-                    } else if (sensor.nome === 'Led') {
+                    } 
+                    else if (sensor.unidade === 'VF') {
                         estadoClasse = 'text-bg-success';
                         sensor.valor == 1 ? estadoTexto = "Ativo" : estadoTexto= "Inativo";
                         sensor.valor == 1 ? estadoClasse = "text-bg-success" : estadoClasse= "text-bg-danger";

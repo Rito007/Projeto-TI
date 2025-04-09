@@ -42,7 +42,7 @@
     <div class="container d-flex justify-content-between align-items-center my-4">
         <div id="title-header">
             <h1>Servidor IoT</h1>
-            <h6>Utilizador: <?php echo $_SESSION['utilizador']; ?></h6>
+            <h6>Utilizador: <?php echo $Auth->getUser(); ?></h6>
         </div>
         <div class="text-end">
             <img class="imagemEstg w-75" src="img/estgRecortado.png" alt="ESTG Logo">
