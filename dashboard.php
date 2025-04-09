@@ -15,10 +15,13 @@
     <?php
     require_once(__DIR__ . "/services/Auth.php");
     require_once(__DIR__ . "/config/config.php");
+    require_once(__DIR__ . "/services/Logica.php");
     use Services\Auth;
+    use Services\Logica;
     use Config\Config;
     $Auth = new Auth();
     $Auth->checkLoginRedirect(Config::get('relativePath'), true);
+
     require __DIR__ . "/components/navbar.php";
 
 
@@ -35,10 +38,11 @@
         </div>
         <div class="text-end"><img class="imagemEstg w-75" src="img/estgRecortado.png" alt="estg-imagem"></div>
     </div>
+    <h5 class="container" id="lotacaoBus">Quantidade Pessoas Autocarro: <?php echo Logica::getLotacao() ?></h5>
     <div class="container h-100 d-flex flex-column justify-content-center">
         <div class="row justify-content-center">
             <?php
-            require_once(dirname(__FILE__) . "/api/api.php");
+            require_once(__DIR__ . "/api/api.php");
 
             use Api\Api;
 
@@ -56,15 +60,15 @@
                         $sensorValor = $sensor['valor'] . $sensor['unidade'];
                     }
                     echo '
-        <div class="col col-sm-4 m-2 cartoesSensores">
-            <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
-                <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
-                <div class="card-body text-center"><img  src="' . $sensor['imagem'] . '"></div>
-                <div class="card-footer">
-                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars($sensor['nome']).'">Histórico</a></span>
-                </div>
-            </div>
-        </div>';
+                        <div class="col col-sm-4 m-2 cartoesSensores">
+                            <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
+                                <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
+                                <div class="card-body text-center"><img  src="' . $sensor['imagem'] . '"></div>
+                                <div class="card-footer">
+                                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars($sensor['nome']).'">Histórico</a></span>
+                                </div>
+                            </div>
+                        </div>';
                 }
             } else {
                 echo '<p>Nenhum sensor disponível.</p>';

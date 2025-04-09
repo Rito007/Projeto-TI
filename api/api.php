@@ -13,25 +13,47 @@ class Api
     
     private static function gerarValoresAleatorios()
     {
+        $JaEntrada = false;
+       
         foreach (Sensor::getSensores() as $sensor) {
+            $valor = 0;
             if($sensor->getNome()== "AC")
                 continue;
-            if ($sensor->getNome() == 'IF Entrada' && rand(0, 1) == 1) 
-            Logica::adicionarEntrada();
-            if ($sensor->getNome() == 'IF Saida' && rand(0, 1) == 1) 
-                Logica::adicionarEntrada();
-             if ($sensor->getNome() == 'Temperatura') {
-                $valor = rand(10, 30);
+            if ($sensor->getNome() == "IF Entrada" && !Logica::cheio()) 
+            {
+                $valor = 0;
+                if(!$JaEntrada && rand(0, 1) == 1)
+                {
+                    Logica::adicionarEntrada();
+                    $JaEntrada = true;      
+                    $valor = 1;
+                }
+            }
                 
-            } elseif ($sensor->getUnidade() == "VF") {
+            if ($sensor->getNome() == "IF Saida") 
+            {
+                $valor = 0;
+                if(!$JaEntrada && rand(0, 1) == 1)
+                {
+                    Logica::adicionarSaida();
+                    $JaEntrada = true;      
+                    $valor = 1;
+                }
+            }  
+
+            if ($sensor->getNome() == 'Temperatura') {
+            $valor = rand(10, 30);  
+            } 
+            if ($sensor->getNome() == "Botao de Paragem") {
                 $valor = rand(0, 1);
             }
             $sensor->setValores($sensor->getNome(), $valor);
         }
         Sensor::getSensorByName('AC')->setValores('AC', Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()));
         Sensor::getSensorByName('Luz de Paragem')->setValores('Luz de Paragem', Logica::logicaBotaoStop(Sensor::getSensorByName('Botao de Paragem')->getValor()));
-        
-    }
+        Sensor::getSensorByName('Motor Abrir Portas')->setValores('Motor Abrir Portas',Sensor::getSensorByName('IF Saida')->getValor());
+        Sensor::getSensorByName('Luz Autocarro Cheio')->setValores('Luz Autocarro Cheio', Logica::logicaLotacao());
+    }   
 
     public static function getSensoresDataJSON()
     {
@@ -83,5 +105,11 @@ if(isset($_GET['valoresSensoresLog']))
 {
     header('Content-Type: application/json');
     echo Api::getSensoresLogJSON();
+    exit;
+}
+if(isset($_GET['lotacaoBus']))
+{
+    header('Content-Type: application/json');
+    echo json_encode(Logica::getLotacao());
     exit;
 }

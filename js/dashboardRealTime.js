@@ -53,6 +53,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function atualizarLotacaoBus()
+    {
+        fetch('api/api.php?lotacaoBus')
+        .then(response => {
+            console.log(response)
+            if (!response.ok) {
+
+                throw new Error('Erro na resposta da API');
+            }
+            return response.json();
+        })
+        .then(data => {
+           document.getElementById('lotacaoBus').innerText= `Quantidade Pessoas Autocarro: ${data}`
+            
+        })
+        .catch(error => console.error("Erro ao atualizar sensores:", error));
+    }
+
     function atualizarValoresSensores() {
         fetch('api/api.php?valoresSensores')
             .then(response => {
@@ -66,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 atualizarTabelaSensores(data);
                 atualizarCardsSensores(data);
+                atualizarLotacaoBus();
             })
             .catch(error => console.error("Erro ao atualizar sensores:", error));
     }

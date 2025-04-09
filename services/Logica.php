@@ -15,6 +15,17 @@ class Logica{
 
     }
 
+    public static function logicaLotacao()
+    {
+        if(self::getLotacao() == 50)
+        {
+            return 1;
+        }
+        return 0;
+
+
+    }
+
     public static function logicaBotaoStop($valor)
     {
         if($valor == 1)
@@ -32,6 +43,7 @@ class Logica{
             return false;
     }
 
+
     public static function vazio()
     {
         $valor = file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
@@ -46,6 +58,7 @@ class Logica{
         $valor = file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
         return $valor;
     }
+
 
     public static function adicionarEntrada()
     {
@@ -77,5 +90,5 @@ class Logica{
     }
 
 }
-
 ?>
+
