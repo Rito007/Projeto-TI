@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function atualizarValoresSensores() {
         fetch('api/api.php?valoresSensores')
             .then(response => {
+                console.log(response)
                 if (!response.ok) {
 
                     throw new Error('Erro na resposta da API');

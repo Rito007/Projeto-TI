@@ -61,6 +61,7 @@
         $this->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome . "/log.txt",  $valor ."," . $this->dataDeAtualizacao."\n", true);
         
         }
+        
 
         public function atualizaValores()
         {

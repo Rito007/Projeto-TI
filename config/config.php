@@ -7,6 +7,8 @@ class Config {
         'rootPath' => null,
         'relativePath' => null,
         'sensorPath' => '/api/sensores',
+        'lotacao' => '/db/lotacaoAutocarro.txt',
+        'lotacaoMax' => 50,
     ];
 
     public static function inicializar() {
