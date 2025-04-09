@@ -12,15 +12,17 @@
     <?php
         require_once(__DIR__ ."\services\Auth.php");
         use Services\Auth;
-    
+        //Verifica a autenticação
         $Auth = new Auth();
+        //Se estiver com login redireciona
         $Auth->checkLoginRedirect("dashboard.php",false);
-
+        //Verifica o post e se tiver com username e password tenta fazer login
         if(isset($_POST['username']) && isset($_POST['password']))
         {
+            //Verifica os dados e resultado é um objeto que conter, erros do nome do utilizador,erro password e sucesso se for o caso
             $resultado = $Auth->login($_POST['username'], $_POST['password']);
         }
-
+        //Se o objeto conter sucesso é redirecionado para o dashboard
         if (isset($resultado->success) && $resultado->success) {
             header("Location: dashboard.php");
             exit;

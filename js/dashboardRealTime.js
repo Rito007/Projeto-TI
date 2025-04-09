@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     let primeiroCarregamento = true;
+
+    //Atualiza todos os valores da tabela dos sensores exceto o nome
     function atualizarTabelaSensores(data) {
         data.forEach(sensor => {
             let row = document.querySelector(`[data-sensor="${sensor.nome}t"]`);
@@ -15,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     let estadoClasse = 'text-bg-primary';
                     let estadoTexto = 'Normal';
         
-                    if (sensor.nome === 'Temperatura' && parseFloat(sensor.valor) > 30) {
+                    if (sensor.nome === 'Temperatura' && parseFloat(sensor.valor) > 22) {
                         estadoClasse = 'text-bg-danger';
                         estadoTexto = 'Elevada';
                     } 
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
+    //Atualiza os valores dos cartões dos sensores
     function atualizarCardsSensores(data) {
         data.forEach(sensor => {
             let card = document.querySelector(`[data-sensor="${sensor.nome}"]`);
@@ -55,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function atualizarLotacaoBus()
     {
+
+        //Como a api dos valores sensores não retorna o valor de pessoas no autocarro é feito outro fetch
         fetch('api/api.php?lotacaoBus')
         .then(response => {
             console.log(response)
@@ -65,12 +69,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then(data => {
+            //altera o valor
            document.getElementById('lotacaoBus').innerText= `Quantidade Pessoas Autocarro: ${data}`
             
         })
         .catch(error => console.error("Erro ao atualizar sensores:", error));
     }
 
+    //Recebe os valores dos sensores pela api url: api.php?valoresSensores
     function atualizarValoresSensores() {
         fetch('api/api.php?valoresSensores')
             .then(response => {
@@ -82,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
+                //Autoexplicativo
                 atualizarTabelaSensores(data);
                 atualizarCardsSensores(data);
                 atualizarLotacaoBus();
@@ -90,8 +97,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if(primeiroCarregamento)
     {
+        //O php apenas adiciona os objetos, aqui é feita as alterações dos valores desses objetos
         atualizarValoresSensores()
         primeiroCarregamento = false;    
     }
+    //Timer de autoatualização de 5 segundos
     setInterval(atualizarValoresSensores, 5000);
 });

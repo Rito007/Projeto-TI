@@ -1,7 +1,11 @@
+//É utilizado jquery e datatables.js
+//É adicionado as logs à datatable fazendo de uso da api
 $.getJSON("api/api.php?valoresSensoresLog", function (resposta) {
     let tbody = '';
     let id = 1;
    
+
+    
     resposta.forEach(sensor => {
         const logs = sensor.logs.split('\n');
         logs.forEach(log => {

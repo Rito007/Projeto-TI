@@ -32,9 +32,10 @@
 
     use Services\Auth;
     use Config\Config;
-
+    //Verifica se o utilizador está com login
     $Auth = new Auth();
     $Auth->checkLoginRedirect(Config::get('relativePath'), true);
+    //Importa Navbar
     require __DIR__ . "/components/navbar.php";
 
     ?>
@@ -64,6 +65,7 @@
                                 <?php
                                 require_once __DIR__ . "/models/sensor.php";
                                 use Models\Sensor;
+                                //Cria uma opção filtro para cada sensor
                                 foreach (Sensor::getSensores() as $sensor) {
                                     $selected = false;
                                     if(isset($_GET['sensor']) && $_GET['sensor'] == $sensor->getNome())
@@ -76,6 +78,7 @@
                             </select>
                         </label>
                     </div>
+                        <!--Esta tabela usa bibliotecas datatables.js e jquery-->
                     <table id="tabelaHistorico" class="table table-striped table-bordered" style="width:100%">
                         <thead class="table-dark">
                             <tr>
@@ -93,7 +96,7 @@
             </div>
         </div>
     </div>
-
+   <?php require_once(__DIR__ . "/components/footer.php"); ?>
 </body>
 
 </html>

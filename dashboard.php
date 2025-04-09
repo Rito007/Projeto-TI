@@ -19,7 +19,10 @@
     use Services\Auth;
     use Services\Logica;
     use Config\Config;
+
+    //Faz a autenticação de Login
     $Auth = new Auth();
+    //Redireciona se não estiver com login
     $Auth->checkLoginRedirect(Config::get('relativePath'), true);
 
     require __DIR__ . "/components/navbar.php";
@@ -34,6 +37,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <div id="title-header">
             <h1>Servidor IoT</h1>
+            <!--Adiciona o nome do utilizador na página-->
             <h6>Utilizador: <?php echo $Auth->getUser(); ?></h6>
         </div>
         <div class="text-end"><img class="imagemEstg w-75" src="img/estgRecortado.png" alt="estg-imagem"></div>
@@ -45,12 +49,15 @@
             require_once(__DIR__ . "/api/api.php");
 
             use Api\Api;
-
+            //Recebe sensores do servidor
             $sensores = Api::getSensoresData();
 
             if (!empty($sensores)) {
+
+                //Adiciona os cartões dos sensores
                 foreach ($sensores as $sensor) {
                     $sensorValor = 0;
+                    //Se o sensor tiver unidade VF(Verdadeiro/Falso) é substituido por Ativo ou Inativo
                     if($sensor['unidade'] == "VF")
                     {
                         $sensor['valor'] == "0" ? $sensorValor = "Ativo" : $sensorValor = "Inativo";
@@ -93,8 +100,9 @@
                         </thead>
                         <tbody>
                             <?php
+                            //Recebe os sensores
                             $sensores = Api::getSensoresData();
-
+                            //Adiciona os sensores como linhas de uma tabela
                             foreach ($sensores as $sensor) {
                                 $estadoClasse = 'text-bg-primary';
                                 if($sensor['unidade'] == "VF")
@@ -125,6 +133,9 @@
         </div>
     </div>
     </div>
+    <?php
+        require_once(__DIR__ . "/components/footer.php");
+    ?>
 </body>
 
 </html>

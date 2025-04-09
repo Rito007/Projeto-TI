@@ -5,13 +5,13 @@ require_once(dirname(__FILE__) ."/../config/config.php");
 
 
 use Config\Config;
-
+//Clase utilizada para gerir os utilizadores criados / carregar e salvar em ficheiro SEM MOTORES de BASE DE DADOS
 class User {
     public $username;
     private $password;
     private static $users = [];
     public static $localUserDB;
-
+    //Cria um utilizador e se precisar de fazer hash da senha será feito
     public function __construct($username, $password, $needsHash = True) {
         $this->username = $username;
         if ($needsHash) {
@@ -20,16 +20,17 @@ class User {
             $this->password = $password;
         }
     }
-
+    //Autoexplicativo
     public function getPassword() {
         return $this->password;
     }
-
+    //Autoexplicativo
     public function getNome() {
         return $this->username;
     }
 
-    // Verifica o usuário e retorna o resultado
+    // Verifica o utilizador e retorna o resultado
+    //O resultado vem num objeto onde contem erro de nome em string, password e sucesso no login para aparecer na pagina de login
     public static function checkUser($username, $password) {
         if (isset(self::$users[$username])) {
             $user = self::$users[$username];
@@ -42,12 +43,12 @@ class User {
         else
             return (object)['unameErro'=>'Utilizador não encontrado.', 'passwordErro'=>'','success'=>false];
     }
-
+    //Inicializar o caminho da DB
     public static function inicializar()
     {
         self::$localUserDB = Config::get("rootPath").Config::get("dbPath");
     }
-
+    //Carregar os utilizadores do ficheiro
     public static function loadUsersFromFile() {
         self::$users = [];
         if (!file_exists(filename: self::$localUserDB) || !is_readable(self::$localUserDB)) {
@@ -62,7 +63,7 @@ class User {
                 $username = $data[0];
                 $password = $data[1];
 
-                // Cria um novo objeto User e adiciona à lista
+                // Cria um novo objeto User e adiciona à lista obs: A lista é estática
                 self::addUser(new User($username, $password, false));
             }
         }
@@ -70,21 +71,23 @@ class User {
         // Fecha o arquivo
         fclose($file);
     }
-
+    //Salva em csv com as passwords já em hash
     public static function addUserCsv($user) {
         $file = fopen(self::$localUserDB, "a");
         fputcsv($file, [$user->getNome(), $user->getPassword()]);
         fclose($file);
     }
-
+    //Adiciona o utilizador à lista
     public static function addUser($user) {
         self::$users[$user->getNome()] = $user;
     }
 }
 
 //User::loadUsersFromFile();
-//Contas criadas aqui
+
 User::inicializar();
+//Contas criadas aqui
+//Se for preciso adicionar utilizador apenas basta descomentar o codigo, alterar e executar este arquivo ex localhost/services/user.php
 //User::addUserCsv(new User("admin","adminadmin"));
 //echo "Utilizador Criado";
 //User::addUserCsv(new User("default","defaultuser"));

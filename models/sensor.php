@@ -5,7 +5,7 @@
     require_once(dirname(__FILE__) . "/../config/config.php");
 
     use Config\Config;
-
+    //Classe sensor para melhor organização dos dados
     class Sensor
     {
         private $nome;
@@ -15,7 +15,8 @@
         private $log;
         private $imagem;
         private static $sensores = [];
-
+        
+        //Criação de um sensor
         public function __construct($nome, $valor, $unidade, $data, $log)
         {
             $this->nome = $nome;
@@ -27,6 +28,7 @@
 
         }
 
+        //Função estatica para receber um sensor por nome
         public static function getSensorByName($nome)
         {
             foreach (Sensor::getSensores() as $sensor) {
@@ -36,7 +38,7 @@
             }
             return null;
         }
-
+        //Função para salvar o valor em ficheiro
         private function escreveFicheiro($caminho, $valor, $log =false)
         {
             if (file_exists($caminho) && !$log) {
@@ -46,12 +48,12 @@
             fwrite($ficheiro, $valor);
             fclose($ficheiro);
         }
-
+        //receber a lista estática dos sensores
         public static function getSensores()
         {
             return self::$sensores;
         }
-
+        //mudar valores do sensor
         public function setValores($nome, $valor)
         {
             $this->valor = $valor;
@@ -62,7 +64,7 @@
         
         }
         
-
+        //atualizar valores do sensor pelo carregamento do arquivo
         public function atualizaValores()
         {
             $caminho = Config::get("rootPath") . Config::get("sensorPath") . '/' . $this->nome;
@@ -73,7 +75,7 @@
             $this->dataDeAtualizacao = $data;
             $this->log = $log;
         }
-
+        //Carregar o sensor de uma pasta
         public static function carregaSensorDaPasta($folderName)
         {
             $caminho = Config::get("rootPath") . Config::get("sensorPath") . '/' . $folderName;
@@ -93,7 +95,7 @@
 
             return new Sensor($nome, $valor, $unidade, $data,$log);
         }
-
+        //Fazer loop das pastas dos sensores e carregar cada sensor individualmente
         public static function carregarSensoresDosFicheiros()
         {
             self::$sensores = [];
@@ -112,7 +114,7 @@
                 
             }
         }
-
+        //Getters e setters
         public function getNome()
         {
             return $this->nome;
@@ -143,6 +145,7 @@
             return $this->log;
         }
 
+        //Esta função é util para retornar varios valores do sensor organizados
         public function toArray()
         {
             return [
