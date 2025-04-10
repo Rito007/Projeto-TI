@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function atualizarCardsSensores(data) {
         data.forEach(sensor => {
             let card = document.querySelector(`[data-sensor="${sensor.nome}"]`);
+            //faz uma animação quando é alterado o valor
+            card.classList.add("animAlteracao");
+            setTimeout(() => card.classList.remove("animAlteracao"), 1500);   
 
             if (card) {
                 console.log(sensor.unidade)

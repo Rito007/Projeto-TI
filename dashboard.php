@@ -42,7 +42,7 @@
         </div>
         <div class="text-end"><img class="imagemEstg w-75" src="img/estgRecortado.png" alt="estg-imagem"></div>
     </div>
-    <h5 class="container" id="lotacaoBus">Quantidade Pessoas Autocarro: <?php echo Logica::getLotacao() ?></h5>
+    <h6 class="container lotacaoBus" id="lotacaoBus">Quantidade Pessoas Autocarro: <?php echo Logica::getLotacao() ?></h6>
     <div class="container h-100 d-flex flex-column justify-content-center">
         <div class="row justify-content-center">
             <?php
@@ -84,7 +84,7 @@
 
         </div>
     </div>
-    <div class="container mt-5">
+    <div class="container mt-5 tabelaLogs">
         <div class="col">
             <div class="card shadow-sm m-2">
                 <div class="card-header"><b>Tabela Sensores</b></div>
