@@ -114,6 +114,17 @@
                 
             }
         }
+
+        //Limpar logs funcao
+        public static function LimparLogs()
+        {
+            foreach(self::$sensores as $sensor)
+            {
+                $sensor->escreveFicheiro(Config::get("rootPath") . Config::get("sensorPath") . '/' . $sensor->nome . "/log.txt", " ", false);
+            }
+            
+        }
+
         //Getters e setters
         public function getNome()
         {
@@ -160,3 +171,9 @@
     }
 
     Sensor::carregarSensoresDosFicheiros();
+
+    if(isset($_GET['limparLogs']))
+    {
+        echo "Logs apagadas";
+        Sensor::LimparLogs();
+    }
