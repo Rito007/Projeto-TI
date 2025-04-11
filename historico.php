@@ -68,10 +68,9 @@
                                 //Cria uma opção filtro para cada sensor
                                 foreach (Sensor::getSensores() as $sensor) {
                                     $selected = false;
-                                    if(isset($_GET['sensor']) && $_GET['sensor'] == $sensor->getNome())
+                                    if(isset($_GET['sensor']) && str_replace('_', ' ',$_GET['sensor']) == $sensor->getNome())
                                         $selected = true;
                                     echo '<option ' . ($selected ? "selected" : "") . ' value="' . $sensor->getNome() . '">' . $sensor->getNome() . '</option>';
-
                                 }
 
                                 ?>

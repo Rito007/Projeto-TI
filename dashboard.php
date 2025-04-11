@@ -70,9 +70,9 @@
                         <div class="col col-sm-4 m-2 cartoesSensores">
                             <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
                                 <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
-                                <div class="card-body text-center"><img  src="' . $sensor['imagem'] . '"></div>
+                                <div class="card-body text-center"><img  alt="Fotofrafia de sensor" src="' . $sensor['imagem'] . '"></div>
                                 <div class="card-footer">
-                                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars($sensor['nome']).'">Histórico</a></span>
+                                    <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars(str_replace(' ', '_', trim($sensor['nome']))).'">Histórico</a></span>
                                 </div>
                             </div>
                         </div>';

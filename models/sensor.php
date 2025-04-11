@@ -23,7 +23,7 @@
             $this->valor = $valor;
             $this->dataDeAtualizacao = $data;
             $this->unidade = $unidade;
-            $this->imagem = Config::get("relativePath") . "//img//" . strtolower(str_replace(' ', '_', trim($nome))) . ".png";
+            $this->imagem = Config::get("relativePath") . "/img/" . strtolower(str_replace(' ', '_', trim($nome))) . ".png";
             $this->log = $log;
 
         }
