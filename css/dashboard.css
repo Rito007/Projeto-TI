@@ -1,0 +1,82 @@
+@media only screen and (min-width:400px) {
+  .imagemEstg{  /*1 Seletor*/  
+        max-width: 300px;
+    }    
+}
+
+@keyframes slideCima {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulsoVisual {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeEntrada {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cartoesSensores { /*2 Seletor*/  
+    animation: slideCima 1s ease forwards;
+}
+
+.lotacaoBus { /*3 Seletor*/  
+    animation: fadeEntrada 1s ease forwards;
+    font-size: 1.2rem;
+}
+
+.animAlteracao{ /*4 Seletor*/  
+    animation: pulsoVisual 1s ease;
+}
+
+.tabelaLogs{ /*5 Seletor*/  
+    animation: slideCima 1s ease forwards;
+}
+
+.card-header.sensor {  /*6 Seletor*/                          
+    background-color: #f8f9fa;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+
+.card-header.sensor:hover {    /*7 Seletor*/                    
+    background-color: #e9ecef;
+}
+
+.card-body img {       /*8 Seletor*/                            
+    max-height: 120px;
+    object-fit: contain;
+    animation: fadeEntrada 0.8s ease;
+}
+
+.card-footer span a {       /*9 Seletor*/                       
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.card-footer span a:hover {      /*10 Seletor*/             
+    text-decoration: none;
+    color: #0a58ca;
+}
+

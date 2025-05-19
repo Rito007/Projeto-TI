@@ -1,0 +1,19 @@
+@media only screen and (min-width:400px) {
+    .imagemEstg{
+        max-width: 300px;
+    }    
+}
+
+
+
+
+.labelFiltro{
+    justify-content: center;
+}
+
+
+@media only screen and (min-width:768px) {
+    .labelFiltro{
+        justify-content: end;
+    }
+}
