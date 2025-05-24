@@ -19,52 +19,78 @@ class Api
     //Exemplo se a temperatura for mais que 22ºC o AC é ligado
     //Temperatura é independente e AC é dependente
     //Esta função faz de uso a classe logica que faz a lógica dos sensores dependetes
-    private static function gerarValoresAleatorios()
-    {
-        $JaEntrada = false;
+    // private static function gerarValoresAleatorios()
+    // {
+    //     $JaEntrada = false;
        
-        foreach (Sensor::getSensores() as $sensor) {
-            $valor = 0;
-            $nomeSensor = $sensor->getNome();
-            if($nomeSensor== "AC" || $nomeSensor == "Luz Autocarro Cheio" || $nomeSensor == "Luz de Paragem" || $nomeSensor=="Motor Abrir Portas")
-                continue;
-            if ($sensor->getNome() == "IF Entrada" && !Logica::cheio()) 
-            {
-                $valor = 0;
-                if(!$JaEntrada && rand(0, 1) == 1)
-                {
-                    Logica::adicionarEntrada();
-                    $JaEntrada = true;      
-                    $valor = 1;
-                }
-            }
+    //     foreach (Sensor::getSensores() as $sensor) {
+    //         $valor = 0;
+    //         $nomeSensor = $sensor->getNome();
+    //         if($nomeSensor== "AC" || $nomeSensor == "Luz Autocarro Cheio" || $nomeSensor == "Luz de Paragem" || $nomeSensor=="Motor Abrir Portas")
+    //             continue;
+    //         if ($sensor->getNome() == "IF Entrada" && !Logica::cheio()) 
+    //         {
+    //             $valor = 0;
+    //             if(!$JaEntrada && rand(0, 1) == 1)
+    //             {
+    //                 Logica::adicionarEntrada();
+    //                 $JaEntrada = true;      
+    //                 $valor = 1;
+    //             }
+    //         }
                 
-            if ($sensor->getNome() == "IF Saida") 
-            {
-                $valor = 0;
-                if(!$JaEntrada && rand(0, 1) == 1)
-                {
-                    Logica::adicionarSaida();
-                    $JaEntrada = true;      
-                    $valor = 1;
-                }
-            }  
+    //         if ($sensor->getNome() == "IF Saida") 
+    //         {
+    //             $valor = 0;
+    //             if(!$JaEntrada && rand(0, 1) == 1)
+    //             {
+    //                 Logica::adicionarSaida();
+    //                 $JaEntrada = true;      
+    //                 $valor = 1;
+    //             }
+    //         }  
 
-            if ($sensor->getNome() == 'Temperatura') {
-            $valor = rand(10, 30);  
-            } 
-            if ($sensor->getNome() == "Botao de Paragem") {
-                $valor = rand(0, 1);
-            }
-            $sensor->setValores($sensor->getNome(), $valor);
-        }
+    //         if ($sensor->getNome() == 'Temperatura') {
+    //         $valor = rand(10, 30);  
+    //         } 
+    //         if ($sensor->getNome() == "Botao de Paragem") {
+    //             $valor = rand(0, 1);
+    //         }
+    //         $sensor->setValores($sensor->getNome(), $valor);
+    //     }
 
-        //Altera os valores dos sensores independentes
-        Sensor::getSensorByName('AC')->setValores('AC', Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()));
-        Sensor::getSensorByName('Luz de Paragem')->setValores('Luz de Paragem', Logica::logicaBotaoStop(Sensor::getSensorByName('Botao de Paragem')->getValor()));
-        Sensor::getSensorByName('Motor Abrir Portas')->setValores('Motor Abrir Portas',Sensor::getSensorByName('IF Saida')->getValor());
-        Sensor::getSensorByName('Luz Autocarro Cheio')->setValores('Luz Autocarro Cheio', Logica::logicaLotacao());
-    }   
+    //     //Altera os valores dos sensores independentes
+    //     Sensor::getSensorByName('AC')->setValores('AC', Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()));
+    //     Sensor::getSensorByName('Luz de Paragem')->setValores('Luz de Paragem', Logica::logicaBotaoStop(Sensor::getSensorByName('Botao de Paragem')->getValor()));
+    //     Sensor::getSensorByName('Motor Abrir Portas')->setValores('Motor Abrir Portas',Sensor::getSensorByName('IF Saida')->getValor());
+    //     Sensor::getSensorByName('Luz Autocarro Cheio')->setValores('Luz Autocarro Cheio', Logica::logicaLotacao());
+    // }   
+
+ public static function processarLogica()
+{
+    $horaAtual = date('d/m/Y H:i');
+
+    Sensor::getSensorByName('AC')->setValores(
+        Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()),
+        $horaAtual
+    );
+
+    Sensor::getSensorByName('LuzdeParagem')->setValores(
+        Logica::logicaBotaoStop(Sensor::getSensorByName('BotaodeParagem')->getValor()),
+        $horaAtual
+    );
+
+    Sensor::getSensorByName('MotorAbrirPortas')->setValores(
+        Sensor::getSensorByName('IFSaida')->getValor(),
+        $horaAtual
+    );
+
+    Sensor::getSensorByName('LuzAutocarroCheio')->setValores(
+        Logica::logicaLotacao(),
+        $horaAtual
+    );
+}
+
 
     //retorna os valores dos sensores em JSON
     public static function getSensoresDataJSON()
@@ -123,6 +149,7 @@ class Api
 //Retorna o JSON dos valores dos sensores
 if (isset($_GET['valoresSensores'])) {
     header('Content-Type: application/json');
+    Api::processarLogica();
     echo Api::getSensoresDataJSON();
     exit;
 }
@@ -159,6 +186,31 @@ if(isset($_GET['sensor']))
     }
 }
 
+if (isset($_GET['logicaSensor'])) {
+    $nome = $_GET['logicaSensor'];
+    Api::processarLogica();
+    // Exemplo de lógica com base no nome
+    if ($nome === "AC") {
+        $temperatura = Sensor::getSensorByName('Temperatura')->getValor();
+        $resultado = Logica::logicaTemperatura($temperatura);
+    } elseif ($nome === "LuzdeParagem") {
+        $botao = Sensor::getSensorByName('BotaodeParagem')->getValor();
+        $resultado = Logica::logicaBotaoStop($botao);
+    } elseif ($nome === "LuzAutocarroCheio") {
+        $resultado = Logica::logicaLotacao();
+    } elseif ($nome === "MotorAbrirPortas") {
+        $saida = Sensor::getSensorByName('IFSaida')->getValor();
+        $resultado = $saida; // Aqui não há lógica extra, é só o valor direto
+    } else {
+        http_response_code(404);
+        echo "Erro: Sensor lógico não reconhecido.";
+        exit;
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['sensor' => $nome, 'valor_logico' => $resultado]);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nome = isset($_POST['nome']) && !empty($_POST['nome']) ? $_POST['nome'] : null;
@@ -180,6 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Erro: Todos os campos (nome, valor, hora) são obrigatórios.";
     }
 }
+
+
 
 
 
