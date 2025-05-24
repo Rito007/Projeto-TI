@@ -52,7 +52,8 @@ class User {
     public static function loadUsersFromFile() {
         self::$users = [];
         if (!file_exists(self::$localUserDB) || !is_readable(self::$localUserDB)) {
-            echo self::$localUserDB;
+            echo  "Arquivo path:".self::$localUserDB;
+            echo'<br><br>'. Config::get("dbPath");
             echo "<br>" . (file_exists(self::$localUserDB) ? 'Arquivo existe' : 'Arquivo não existe');
 
             // Verifica se o arquivo é legível

@@ -70,10 +70,17 @@
                         <div class="col col-sm-4 m-2 cartoesSensores">
                             <div class="card shadow-sm" data-sensor="' . htmlspecialchars($sensor['nome']) . '">
                                 <div class="card-header sensor"><b>' . htmlspecialchars($sensor['nome']) . ': ' . htmlspecialchars($sensorValor) . '</b></div>
-                                <div class="card-body text-center"><img  alt="Fotofrafia de sensor" src="' . $sensor['imagem'] . '"></div>
+                                <div class="card-body text-center"><img  alt="Fotofrafia de sensor" src="' . $sensor['imagem'] . '">
+                                </div>
                                 <div class="card-footer">
                                     <span><b>Atualização:</b> ' . htmlspecialchars($sensor['data_de_atualizacao']) . ' - <a href="historico.php?sensor='.htmlspecialchars(str_replace(' ', '_', trim($sensor['nome']))).'">Histórico</a></span>
                                 </div>
+                                '.($sensor['unidade'] == "VF" ?  ($sensor['valor'] == "0" ?  '<input class="btn btn-primary" id="BotaoAtivacao" type="button" value="Ativar">' : '<input class="btn btn-danger" id="BotaoAtivacao" type="button" value="Desativar">'): 
+                                '<div class="d-flex bg-light align-items-center justify-content-center gap-3  w-100">
+                                <button class="btn btn-primary">−</button>
+                                <div id="temperatura" class="temp-display">20.0°C</div>
+                                <button class="btn btn-primary">+</button>
+                            </div>').'
                             </div>
                         </div>';
                 }
@@ -113,7 +120,6 @@
                                 {
                                     $sensorValor = $sensor['valor'] . $sensor['unidade'];
                                 }
-
                                 echo '
                                     <tr data-sensor="' . htmlspecialchars($sensor['nome']) . 't">
                                         <th scope="row">' . htmlspecialchars($sensor['nome']) . '</th>

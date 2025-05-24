@@ -5,11 +5,11 @@ namespace Config;
 
 class Config {
     private static $config = [
-        'dbPath' => 'ti/ti128/db/users.csv',
+        'dbPath' => '/db/users.csv',
         'rootPath' => null,
         'relativePath' => null,
-        'sensorPath' => 'ti/ti128/api/sensores',
-        'lotacao' => 'ti/ti128/db/lotacaoAutocarro.txt',
+        'sensorPath' => '/api/sensores',
+        'lotacao' => '/db/lotacaoAutocarro.txt',
         'lotacaoMax' => 20,
     ];
 
