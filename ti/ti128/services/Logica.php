@@ -1,96 +1,73 @@
 <?php
+
 namespace Services;
-require_once __DIR__ ."/../config/config.php";
+
+require_once __DIR__ . "/../config/config.php";
+
 use Config\Config;
-//Classe de logica usada para fazer a lógica dos sensores
-class Logica{
 
-    //Se a temperatura for maior que 22 retorna 1
-    public static function logicaTemperatura($valor)
-    { 
-        if((float)$valor >=22)
-            return 1;
-        else
-            return 0;
-
+class Logica
+{
+    private static function getLotacaoFicheiroPath()
+    {
+        return Config::get("rootPath") . "/" . Config::get("lotacao");
     }
-    //Se estiver na lotacao maxima retorna true
+
+    private static function lerLotacao()
+    {
+        return (int) file_get_contents(self::getLotacaoFicheiroPath());
+    }
+
+    private static function escreverLotacao($valor)
+    {
+        file_put_contents(self::getLotacaoFicheiroPath(), $valor);
+    }
+
+    public static function logicaTemperatura($valor)
+    {
+        return (float) $valor >= 23 ? 1 : 0;
+    }
+
     public static function logicaLotacao()
     {
-        if(self::getLotacao() == Config::get('lotacaoMax'))
-        {
-            return 1;
-        }
-        return 0;
-
-
+        return self::lerLotacao() >= (int) Config::get('lotacaoMax') ? 1 : 0;
     }
-    //Logica do botao (Isto é desnecessário apenas foi feito para mater a coerência)
+
     public static function logicaBotaoStop($valor)
     {
-        if($valor == 1)
-            return 1;
-        else
-            return 0;
+        return $valor == 1 ? 1 : 0;
     }
-    //verifica se o autocarro está cheio
+
     public static function cheio()
     {
-        $valor = file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
-        if($valor >= Config::get('lotacaoMax'))
-            return true;
-        else
-            return false;
+        return self::lerLotacao() >= (int) Config::get('lotacaoMax');
     }
 
-    //verifica se o autocarro está vazio
     public static function vazio()
     {
-        $valor = file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
-        if($valor <= 0)
-            return true;
-        else
-            return false;
+        return self::lerLotacao() <= 0;
     }
-    //Retorna o valor de pessoas no autocarro
+
     public static function getLotacao()
     {
-        $valor = file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
-        return $valor;
+        return self::lerLotacao();
     }
 
-    //Adiciona entrada de pessoas
     public static function adicionarEntrada()
     {
-        if(!self::cheio())
-        {
-            $valor =file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
-            $valor +=1;
-            file_put_contents(Config::get("rootPath")."/".Config::get("lotacao"), $valor);
-            return true;
-        }
-        else
-        {
-            return false;
-        }  
+        if (self::cheio()) return false;
+
+        $novaLotacao = self::lerLotacao() + 1;
+        self::escreverLotacao($novaLotacao);
+        return true;
     }
 
-    //Adiciona saida de pessoas
     public static function adicionarSaida()
     {
-        if(!self::vazio())
-        {
-            $valor =file_get_contents(Config::get("rootPath")."/".Config::get("lotacao"));
-            $valor -=1;
-            file_put_contents(Config::get("rootPath")."/".Config::get("lotacao"), $valor);
-            return true;
-        }
-        else
-        {
-            return false;
-        }  
+        if (self::vazio()) return false;
+
+        $novaLotacao = self::lerLotacao() - 1;
+        self::escreverLotacao($novaLotacao);
+        return true;
     }
-
 }
-?>
-

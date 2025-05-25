@@ -36,6 +36,16 @@
     }
 }
 
+.temp-display{
+    border-radius: 20%;
+    padding: 7px;
+    padding-left: 10px;
+    border: 1px solid black;
+    padding-right: 10px;
+    background-color: white;
+
+}
+
 .cartoesSensores { /*2 Seletor*/  
     animation: slideCima 1s ease forwards;
 }

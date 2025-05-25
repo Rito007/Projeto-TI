@@ -14,57 +14,9 @@ error_reporting(E_ALL);
 //Futuramente irá ser usada para integrar dispositivos reais
 class Api
 {
-    //Gera valores aleatórios para os sensores independentes, por exemplo o botão de paragem
-    //Os dependentes estão relacionados com outros sensores
-    //Exemplo se a temperatura for mais que 22ºC o AC é ligado
-    //Temperatura é independente e AC é dependente
-    //Esta função faz de uso a classe logica que faz a lógica dos sensores dependetes
-    private static function gerarValoresAleatorios()
-    {
-        $JaEntrada = false;
-       
-        foreach (Sensor::getSensores() as $sensor) {
-            $valor = 0;
-            $nomeSensor = $sensor->getNome();
-            if($nomeSensor== "AC" || $nomeSensor == "Luz Autocarro Cheio" || $nomeSensor == "Luz de Paragem" || $nomeSensor=="Motor Abrir Portas")
-                continue;
-            if ($sensor->getNome() == "IF Entrada" && !Logica::cheio()) 
-            {
-                $valor = 0;
-                if(!$JaEntrada && rand(0, 1) == 1)
-                {
-                    Logica::adicionarEntrada();
-                    $JaEntrada = true;      
-                    $valor = 1;
-                }
-            }
-                
-            if ($sensor->getNome() == "IF Saida") 
-            {
-                $valor = 0;
-                if(!$JaEntrada && rand(0, 1) == 1)
-                {
-                    Logica::adicionarSaida();
-                    $JaEntrada = true;      
-                    $valor = 1;
-                }
-            }  
 
-            if ($sensor->getNome() == 'Temperatura') {
-            $valor = rand(10, 30);  
-            } 
-            if ($sensor->getNome() == "Botao de Paragem") {
-                $valor = rand(0, 1);
-            }
-            $sensor->setValores($sensor->getNome(), $valor);
-        }
 
-        //Altera os valores dos sensores independentes
-        Sensor::getSensorByName('AC')->setValores('AC', Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()));
-        Sensor::getSensorByName('Luz de Paragem')->setValores('Luz de Paragem', Logica::logicaBotaoStop(Sensor::getSensorByName('Botao de Paragem')->getValor()));
-        Sensor::getSensorByName('Motor Abrir Portas')->setValores('Motor Abrir Portas',Sensor::getSensorByName('IF Saida')->getValor());
-        Sensor::getSensorByName('Luz Autocarro Cheio')->setValores('Luz Autocarro Cheio', Logica::logicaLotacao());
-    }   
+
 
     //retorna os valores dos sensores em JSON
     public static function getSensoresDataJSON()
@@ -123,6 +75,7 @@ class Api
 //Retorna o JSON dos valores dos sensores
 if (isset($_GET['valoresSensores'])) {
     header('Content-Type: application/json');
+
     echo Api::getSensoresDataJSON();
     exit;
 }
@@ -160,15 +113,70 @@ if(isset($_GET['sensor']))
 }
 
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nome = isset($_POST['nome']) && !empty($_POST['nome']) ? $_POST['nome'] : null;
     $valor = isset($_POST['valor']) ? $_POST['valor'] : null;
     $hora = isset($_POST['hora']) && !empty($_POST['hora']) ? $_POST['hora'] : null;
-    if ($nome && $valor != null && $hora) {
+
+    if ($nome && $valor !== null && $hora) {
         $sensor = Sensor::getSensorByName($nome);
 
         if ($sensor) {
+            // Atualiza o sensor recebido via POST
             $sensor->setValores($valor, $hora);
+
+            // Mapa dos sensores pais para os filhos que dependem deles
+            $mapaPaiFilho = [
+                'Temperatura' => ['AC'],
+                'Botao de Paragem' => ['LuzdeParagem'],
+                'IF Entrada' => ['Entrada', 'LuzAutocarroCheio'],
+                'IF Saida' => ['Saida', 'LuzAutocarroCheio', 'MotorAbrirPortas'], // Aqui adicionamos o filho extra
+            ];
+
+            // Se o sensor atualizado é um pai, processa a lógica para atualizar os filhos
+            if (array_key_exists($nome, $mapaPaiFilho)) {
+                foreach ($mapaPaiFilho[$nome] as $filho) {
+                    switch ($filho) {
+                        case 'AC':
+                            Sensor::getSensorByName('AC')->setValores(
+                                Logica::logicaTemperatura(Sensor::getSensorByName('Temperatura')->getValor()),
+                                $hora
+                            );
+                            break;
+
+                        case 'LuzdeParagem':
+                            Sensor::getSensorByName('LuzdeParagem')->setValores(
+                                Logica::logicaBotaoStop(Sensor::getSensorByName('BotaodeParagem')->getValor()),
+                                $hora
+                            );
+                            break;
+
+                        case 'LuzAutocarroCheio':
+                            Sensor::getSensorByName('LuzAutocarroCheio')->setValores(
+                                Logica::logicaLotacao(),
+                                $hora
+                            );
+                            break;
+                        case 'Entrada':
+                            if($valor == 1)
+                                Logica::adicionarEntrada();
+                            break;
+                        case 'Saida':
+                            if($valor == 1)
+                                Logica::adicionarSaida();
+                            break;
+
+                        case 'MotorAbrirPortas':
+                            Sensor::getSensorByName('MotorAbrirPortas')->setValores(
+                                Sensor::getSensorByName('IFSaida')->getValor(),
+                                $hora
+                            );
+                            break;
+                    }
+                }
+            }
+
             http_response_code(200);
             echo "Sensor atualizado com sucesso. Nome: $nome, Valor: $valor, Hora: $hora";
         } else {
@@ -180,6 +188,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Erro: Todos os campos (nome, valor, hora) são obrigatórios.";
     }
 }
-
-
 
